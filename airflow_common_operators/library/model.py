@@ -24,6 +24,7 @@ def clone_repo(
     clean: bool = False,
     install: bool = True,
     install_deps: bool = False,
+    editable: bool = True,
     tool: Tool = "pip",
     dir: str = "",
 ):
@@ -47,7 +48,8 @@ def clone_repo(
     if install:
         tool = "uv pip" if tool == "uv" else "pip"
         install_deps_flag = "" if install_deps else "--no-deps "
-        cmd = f"{tool} install {install_deps_flag}-e ."
+        editable_flag = "-e " if editable else ""
+        cmd = f"{tool} install {install_deps_flag}{editable_flag}."
         cmds.append(f"{cmd}")
     return BashCommands(commands=cmds)._serialize()
 
@@ -60,6 +62,7 @@ class GitRepo(BaseModel):
     clean: bool = False
     install: bool = True
     install_deps: bool = False
+    editable: bool = True
     tool: Tool = "pip"
     dir: str = ""
 
@@ -71,6 +74,7 @@ class GitRepo(BaseModel):
             clean=self.clean,
             install=self.install,
             install_deps=self.install_deps,
+            editable=self.editable,
             tool=self.tool,
             dir=self.dir,
         )
@@ -81,6 +85,7 @@ class PipLibrary(BaseModel):
 
     version_constraint: str = ""
     install_deps: bool = False
+    reinstall: bool = False
     tool: Tool = "pip"
     dir: str = ""
 
@@ -88,7 +93,10 @@ class PipLibrary(BaseModel):
         tool = "uv pip" if self.tool == "uv" else "pip"
         install_deps_flag = "" if self.install_deps else "--no-deps "
         install_dir_flag = "" if not self.dir else f"--target {self.dir} "
-        return BashCommands(commands=[f'{tool} install {install_deps_flag}{install_dir_flag}"{self.name}{self.version_constraint}"'])._serialize()
+        reinstall_flag = "--force-reinstall " if self.reinstall else ""
+        return BashCommands(
+            commands=[f'{tool} install {install_deps_flag}{install_dir_flag}{reinstall_flag}"{self.name}{self.version_constraint}"']
+        )._serialize()
 
 
 class LibraryList(BaseModel):
