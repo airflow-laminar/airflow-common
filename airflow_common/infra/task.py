@@ -54,24 +54,24 @@ JournalctlCleanSSHOperatorArgs = JournalctlCleanSSHTaskArgs
 
 
 class JournalctlCleanTask(BashTask, JournalctlCleanTaskArgs):
-    operator: CallablePath = Field(default="airflow_common_operators.JournalctlClean", validate_default=True)
+    operator: CallablePath = Field(default="airflow_common.JournalctlClean", validate_default=True)
 
     @field_validator("operator")
     @classmethod
     def validate_operator(cls, v: Type) -> Type:
         if v is not JournalctlClean:
-            raise ValueError(f"operator must be 'airflow_common_operators.JournalctlClean', got: {v}")
+            raise ValueError(f"operator must be 'airflow_common.JournalctlClean', got: {v}")
         return v
 
 
 class JournalctlCleanSSHTask(SSHTask, JournalctlCleanSSHTaskArgs):
-    operator: CallablePath = Field(default="airflow_common_operators.JournalctlCleanSSH", validate_default=True)
+    operator: CallablePath = Field(default="airflow_common.JournalctlCleanSSH", validate_default=True)
 
     @field_validator("operator")
     @classmethod
     def validate_operator(cls, v: Type) -> Type:
         if v is not JournalctlCleanSSH:
-            raise ValueError(f"operator must be 'airflow_common_operators.JournalctlCleanSSH', got: {v}")
+            raise ValueError(f"operator must be 'airflow_common.JournalctlCleanSSH', got: {v}")
         return v
 
 

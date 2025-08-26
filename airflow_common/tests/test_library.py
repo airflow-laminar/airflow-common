@@ -1,4 +1,4 @@
-from airflow_common_operators import GitRepo, PipLibrary, clone_repo
+from airflow_common import GitRepo, PipLibrary, clone_repo
 
 
 class TestLibrary:

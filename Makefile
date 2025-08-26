@@ -23,20 +23,20 @@ install:  ## install library
 .PHONY: lint-py lint-docs fix-py fix-docs lint lints fix format
 
 lint-py:  ## lint python with ruff
-	python -m ruff check airflow_common_operators
-	python -m ruff format --check airflow_common_operators
+	python -m ruff check airflow_common
+	python -m ruff format --check airflow_common
 
 lint-docs:  ## lint docs with mdformat and codespell
-	python -m mdformat --check README.md 
-	python -m codespell_lib README.md 
+	python -m mdformat --check README.md
+	python -m codespell_lib README.md
 
 fix-py:  ## autoformat python code with ruff
-	python -m ruff check --fix airflow_common_operators
-	python -m ruff format airflow_common_operators
+	python -m ruff check --fix airflow_common
+	python -m ruff format airflow_common
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-	python -m mdformat README.md 
-	python -m codespell_lib --write README.md 
+	python -m mdformat README.md
+	python -m codespell_lib --write README.md
 
 lint: lint-py lint-docs  ## run all linters
 lints: lint
@@ -57,7 +57,7 @@ checks: check-manifest
 check: checks
 
 annotate:  ## run python type annotation checks with mypy
-	python -m mypy ./airflow_common_operators
+	python -m mypy ./airflow_common
 
 #########
 # TESTS #
@@ -65,10 +65,10 @@ annotate:  ## run python type annotation checks with mypy
 .PHONY: test coverage tests
 
 test:  ## run python tests
-	python -m pytest -v airflow_common_operators/tests
+	python -m pytest -v airflow_common/tests
 
 coverage:  ## run tests and collect test coverage
-	python -m pytest -v airflow_common_operators/tests --cov=airflow_common_operators --cov-report term-missing --cov-report xml
+	python -m pytest -v airflow_common/tests --cov=airflow_common --cov-report term-missing --cov-report xml
 
 # Alias
 tests: test

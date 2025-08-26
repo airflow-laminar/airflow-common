@@ -2,7 +2,7 @@
 
 defaults: []
 
-_target_: airflow_common_operators.LibraryList
+_target_: airflow_common.LibraryList
 pip:
   - name: lib1
     version_constraint: ">=1.0"

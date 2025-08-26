@@ -154,22 +154,22 @@ class LibraryListSSHTaskArgs(SSHTaskArgs, _LibraryCommonArgs): ...
 
 
 class LibraryListTask(BashTask, LibraryListTaskArgs):
-    operator: ImportPath = Field(default="airflow_common_operators.InstallLibraryOperator", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.InstallLibraryOperator", validate_default=True)
 
     @field_validator("operator")
     @classmethod
     def validate_operator(cls, v: Type) -> Type:
         if not isinstance(v, Type) and issubclass(v, InstallLibraryOperator):
-            raise ValueError(f"operator must be 'airflow_common_operators.InstallLibraryOperator', got: {v}")
+            raise ValueError(f"operator must be 'airflow_common.InstallLibraryOperator', got: {v}")
         return v
 
 
 class LibraryListSSHTask(SSHTask, LibraryListTaskArgs):
-    operator: ImportPath = Field(default="airflow_common_operators.InstallLibrarySSHOperator", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.InstallLibrarySSHOperator", validate_default=True)
 
     @field_validator("operator")
     @classmethod
     def validate_operator(cls, v: Type) -> Type:
         if not isinstance(v, Type) and issubclass(v, InstallLibrarySSHOperator):
-            raise ValueError(f"operator must be 'airflow_common_operators.InstallLibrarySSHOperator', got: {v}")
+            raise ValueError(f"operator must be 'airflow_common.InstallLibrarySSHOperator', got: {v}")
         return v

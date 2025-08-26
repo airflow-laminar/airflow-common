@@ -6,7 +6,7 @@ from datetime import datetime
 from airflow.models import DAG
 from airflow.providers.standard.operators.bash import BashOperator
 
-from airflow_common_operators.library.task import InstallLibrarySSHOperator
+from airflow_common.library.task import InstallLibrarySSHOperator
 
 with DAG(
     description="this is an example dag",

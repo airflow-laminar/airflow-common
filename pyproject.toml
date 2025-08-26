@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend="hatchling.build"
 
 [project]
-name = "airflow-common-operators"
-authors = [{name = "the airflow-common-operators authors", email = "t.paine154@gmail.com"}]
+name = "airflow-common"
+authors = [{name = "the airflow-common authors", email = "t.paine154@gmail.com"}]
 description = "Common operators and tasks for airflow"
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -57,8 +57,8 @@ develop = [
 [project.scripts]
 
 [project.urls]
-Repository = "https://github.com/airflow-laminar/airflow-common-operators"
-Homepage = "https://github.com/airflow-laminar/airflow-common-operators"
+Repository = "https://github.com/airflow-laminar/airflow-common"
+Homepage = "https://github.com/airflow-laminar/airflow-common"
 
 [tool.bumpversion]
 current_version = "0.7.6"
@@ -67,7 +67,7 @@ tag = true
 commit_args = "-s"
 
 [[tool.bumpversion.files]]
-filename = "airflow_common_operators/__init__.py"
+filename = "airflow_common/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
 
@@ -86,7 +86,7 @@ ignore = [
 [tool.coverage.run]
 branch = true
 omit = [
-    "airflow_common_operators/tests/integration/",
+    "airflow_common/tests/integration/",
 ]
 [tool.coverage.report]
 exclude_also = [
@@ -104,14 +104,14 @@ artifacts = []
 src = "/"
 
 [tool.hatch.build.targets.sdist]
-packages = ["airflow_common_operators"]
+packages = ["airflow_common"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["airflow_common_operators"]
+packages = ["airflow_common"]
 
 [tool.pytest.ini_options]
 addopts = ["-vvv", "--junitxml=junit.xml"]
-testpaths = "airflow_common_operators/tests"
+testpaths = "airflow_common/tests"
 
 [tool.ruff]
 line-length = 150
@@ -123,14 +123,14 @@ preview = true
 [tool.ruff.lint.isort]
 combine-as-imports = true
 default-section = "third-party"
-known-first-party = ["airflow_common_operators"]
+known-first-party = ["airflow_common"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
 
 [tool.yardang]
-title = "airflow-common-operators"
+title = "airflow-common"
 root = "README.md"
 pages = ["docs/src/API.md"]
 use-autoapi = false
