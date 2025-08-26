@@ -4,6 +4,6 @@
 .. autosummary::
    :toctree: _build
 
-    airflow_common_operators
+    airflow_common
 
 ```

@@ -11,27 +11,27 @@ docs/src/API.md
 
 ```
 
-# airflow-common-operators
+# airflow-common
 
 Common operators and tasks for Airflow
 
-[![Build Status](https://github.com/airflow-laminar/airflow-common-operators/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/airflow-laminar/airflow-common-operators/actions/workflows/build.yaml)
-[![codecov](https://codecov.io/gh/airflow-laminar/airflow-common-operators/branch/main/graph/badge.svg)](https://codecov.io/gh/airflow-laminar/airflow-common-operators)
-[![License](https://img.shields.io/github/license/airflow-laminar/airflow-common-operators)](https://github.com/airflow-laminar/airflow-common-operators)
-[![PyPI](https://img.shields.io/pypi/v/airflow-common-operators.svg)](https://pypi.python.org/pypi/airflow-common-operators)
+[![Build Status](https://github.com/airflow-laminar/airflow-common/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/airflow-laminar/airflow-common/actions/workflows/build.yaml)
+[![codecov](https://codecov.io/gh/airflow-laminar/airflow-common/branch/main/graph/badge.svg)](https://codecov.io/gh/airflow-laminar/airflow-common)
+[![License](https://img.shields.io/github/license/airflow-laminar/airflow-common)](https://github.com/airflow-laminar/airflow-common)
+[![PyPI](https://img.shields.io/pypi/v/airflow-common.svg)](https://pypi.python.org/pypi/airflow-common)
 
 ## Installation
 
 You can install from pip:
 
 ```bash
-pip install airflow-common-operators
+pip install airflow-common
 ```
 
 Or via conda:
 
 ```bash
-conda install airflow-common-operators -c conda-forge
+conda install airflow-common -c conda-forge
 ```
 
 ## License
