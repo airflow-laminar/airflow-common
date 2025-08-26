@@ -13,7 +13,7 @@ dags:
         _target_: airflow_config.BashOperator
         bash_command: "echo '1'"
       run:
-        _target_: airflow_common_operators.LibraryListSSHTask
+        _target_: airflow_common.LibraryListSSHTask
         command_prefix: echo "test"
         git: ${extensions.libraries.git}
         pip: ${extensions.libraries.pip}
@@ -28,6 +28,6 @@ dags:
     schedule: "0 3 * * *"
     tasks:
       clean:
-        _target_: airflow_common_operators.JournalctlCleanOperator
+        _target_: airflow_common.JournalctlCleanOperator
         sudo: true
         days: 2

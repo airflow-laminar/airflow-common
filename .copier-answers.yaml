@@ -7,6 +7,6 @@ add_wiki: false
 email: t.paine154@gmail.com
 github: airflow-laminar
 project_description: Common operators and tasks for airflow
-project_name: airflow-common-operators
+project_name: airflow-common
 python_version_primary: '3.11'
-team: the airflow-common-operators authors
+team: the airflow-common authors

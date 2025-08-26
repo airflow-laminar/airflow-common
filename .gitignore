@@ -141,15 +141,15 @@ js/node_modules
 js/test-results
 js/playwright-report
 js/*.tgz
-airflow_common_operators/extension
+airflow_common/extension
 
 # Jupyter
 .ipynb_checkpoints
 .autoversion
-!airflow_common_operators/extension/airflow_common_operators.json
-!airflow_common_operators/extension/install.json
-airflow_common_operators/nbextension
-airflow_common_operators/labextension
+!airflow_common/extension/airflow_common.json
+!airflow_common/extension/install.json
+airflow_common/nbextension
+airflow_common/labextension
 
 # Mac
 .DS_Store
