@@ -52,6 +52,7 @@ develop = [
     "apache-airflow-providers-standard",
     "airflow-config>=1",
     "paramiko<4",
+    "structlog<25.5.0",
 ]
 
 [project.scripts]
