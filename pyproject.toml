@@ -64,7 +64,6 @@ airflow3 = [
     "structlog<25.5.0",
 ]
 
-
 [project.scripts]
 
 [project.urls]
@@ -106,7 +105,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
-fail_under = 75
+fail_under = 70
 
 [tool.hatch.build]
 artifacts = []

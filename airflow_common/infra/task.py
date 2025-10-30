@@ -25,6 +25,8 @@ def clean_journalctl(sudo: Optional[bool] = True, days: Optional[int] = 2):
 
 
 class JournalctlClean(BashOperator):
+    _original = "airflow_common.infra.task.JournalctlClean"
+
     def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
         if "bash_command" in kwargs:
             raise ValueError("JournalctlClean does not accept 'bash_command' as an argument.")
@@ -32,6 +34,8 @@ class JournalctlClean(BashOperator):
 
 
 class JournalctlCleanSSH(SSHOperator):
+    _original = "airflow_common.infra.task.JournalctlCleanSSH"
+
     def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
         if "command" in kwargs:
             raise ValueError("JournalctlCleanSSH does not accept 'command' as an argument.")
