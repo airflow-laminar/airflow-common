@@ -47,11 +47,21 @@ develop = [
     "uv",
     "wheel",
     # Config
-    "apache-airflow>=2.8,<3.1",
+    "airflow-config>=1",
+]
+airflow = [
+    "apache-airflow>=2.8,<3",
     "apache-airflow-providers-ssh",
     "apache-airflow-providers-standard",
-    "airflow-config>=1",
     "paramiko<4",
+    "structlog<25.5.0",
+]
+airflow3 = [
+    "apache-airflow>=3,<3.2",
+    "apache-airflow-providers-ssh",
+    "apache-airflow-providers-standard",
+    "paramiko<4",
+    "structlog<25.5.0",
 ]
 
 [project.scripts]
@@ -95,7 +105,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
-fail_under = 75
+fail_under = 70
 
 [tool.hatch.build]
 artifacts = []

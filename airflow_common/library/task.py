@@ -100,6 +100,8 @@ class LibraryOperatorBase(PythonOperator):
 
 
 class InstallLibraryOperator(LibraryOperatorBase):
+    _original = "airflow_common.library.task.InstallLibraryOperator"
+
     def __init__(
         self, task_id: str, pip: List[PipLibrary], git: List[GitRepo], parallel: Optional[bool] = False, command_prefix: Optional[str] = "", **kwargs
     ):
@@ -120,6 +122,8 @@ class InstallLibraryOperator(LibraryOperatorBase):
 
 
 class InstallLibrarySSHOperator(LibraryOperatorBase):
+    _original = "airflow_common.library.task.InstallLibrarySSHOperator"
+
     def __init__(
         self, task_id: str, pip: List[PipLibrary], git: List[GitRepo], parallel: Optional[bool] = False, command_prefix: Optional[str] = "", **kwargs
     ):
