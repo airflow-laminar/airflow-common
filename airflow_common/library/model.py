@@ -1,19 +1,22 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 from airflow_pydantic import BaseModel, BashCommands
-from pydantic import Field
+from pydantic import Field, model_validator
 
 __all__ = (
     "clone_repo",
     "GitRepo",
     "PipLibrary",
+    "CondaLibrary",
     "LibraryList",
     "Library",
-    "Tool",
+    "PyPATool",
+    "CondaTool",
 )
 
 
-Tool = Literal["pip", "uv"]
+PyPATool = Literal["pip", "uv"]
+CondaTool = Literal["conda", "mamba", "micromamba"]
 
 
 def clone_repo(
@@ -25,7 +28,7 @@ def clone_repo(
     install: bool = True,
     install_deps: bool = False,
     editable: bool = True,
-    tool: Tool = "pip",
+    tool: PyPATool = "pip",
     dir: str = "",
 ):
     cmds = [
@@ -63,7 +66,7 @@ class GitRepo(BaseModel):
     install: bool = True
     install_deps: bool = False
     editable: bool = True
-    tool: Tool = "pip"
+    tool: PyPATool = "pip"
     dir: str = ""
 
     def clone(self):
@@ -86,7 +89,7 @@ class PipLibrary(BaseModel):
     version_constraint: str = ""
     install_deps: bool = False
     reinstall: bool = False
-    tool: Tool = "pip"
+    tool: PyPATool = "pip"
     dir: str = ""
 
     def install(self):
@@ -99,9 +102,39 @@ class PipLibrary(BaseModel):
         )._serialize()
 
 
+class CondaLibrary(BaseModel):
+    name: str
+
+    version_constraint: str = ""
+    install_deps: bool = False
+    reinstall: bool = False
+    tool: CondaTool = "conda"
+
+    env: str = ""
+    prefix: str = ""
+
+    @model_validator(mode="after")
+    def _ensure_env_name_or_prefix_not_both(self):
+        if self.env and self.prefix:
+            raise ValueError("Either 'env' or 'prefix' can be specified, but not both.")
+        return self
+
+    def install(self):
+        install_deps_flag = "" if self.install_deps else "--no-deps "
+        install_dir_flag = f"--name {self.env} " if self.env else f"--prefix {self.prefix} " if self.prefix else ""
+        reinstall_flag = "--force-reinstall " if self.reinstall else ""
+        return BashCommands(
+            commands=[f'{self.tool} install -y {install_deps_flag}{install_dir_flag}{reinstall_flag}"{self.name}{self.version_constraint}"']
+        )._serialize()
+
+
 class LibraryList(BaseModel):
     pip: List[PipLibrary] = Field(default_factory=list)
+    conda: List[CondaLibrary] = Field(default_factory=list)
     git: List[GitRepo] = Field(default_factory=list)
+
+    parallel: Optional[bool] = Field(default=False)
+    command_prefix: Optional[str] = Field(default="")
 
 
 # Alias

@@ -40,6 +40,7 @@ class TestConfig:
         assert config
         assert "libraries" in config.extensions
         assert len(config.extensions["libraries"].pip) == 3
+        assert len(config.extensions["libraries"].conda) == 0
         assert len(config.extensions["libraries"].git) == 3
 
     def test_render_and_instantiate(self):
