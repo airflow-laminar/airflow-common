@@ -4,7 +4,7 @@ from airflow_pydantic import BashTask, BashTaskArgs, ImportPath, SSHTask, SSHTas
 from airflow_pydantic.airflow import PythonOperator
 from pydantic import Field, field_validator
 
-from .model import GitRepo, PipLibrary
+from .model import CondaLibrary, GitRepo, LibraryList, PipLibrary
 
 __all__ = (
     "LibraryOperatorBase",
@@ -25,6 +25,7 @@ class LibraryOperatorBase(PythonOperator):
         self,
         task_id: str,
         pip: List[PipLibrary],
+        conda: List[CondaLibrary],
         git: List[GitRepo],
         operator,
         operator_command_arg,
@@ -33,6 +34,7 @@ class LibraryOperatorBase(PythonOperator):
         **kwargs,
     ):
         self.pip = pip
+        self.conda = conda
         self.git = git
         self.operator = operator
         self.parallel = parallel
@@ -47,6 +49,8 @@ class LibraryOperatorBase(PythonOperator):
             info.append(f"Git library: {lib}")
         for lib in self.pip:
             info.append(f"Pip library: {lib}")
+        for lib in self.conda:
+            info.append(f"Conda library: {lib}")
 
         # Initialize self
         super().__init__(
@@ -69,13 +73,23 @@ class LibraryOperatorBase(PythonOperator):
 
         for pip_lib in self.pip:
             pip_lib_install_op = self.operator(
-                task_id=f"{task_id}-{pip_lib.name}-install",
+                task_id=f"{task_id}-{pip_lib.name}-pip-install",
                 **{operator_command_arg: f"{self.command_prefix}{pip_lib.install()}"},
                 **kwargs,
             )
             # NOTE: overloading shift so use parent's
             PythonOperator.set_downstream(last_command, pip_lib_install_op)
             last_command = self if self.parallel else pip_lib_install_op
+
+        for conda_lib in self.conda:
+            conda_lib_install_op = self.operator(
+                task_id=f"{task_id}-{conda_lib.name}-conda-install",
+                **{operator_command_arg: f"{self.command_prefix}{conda_lib.install()}"},
+                **kwargs,
+            )
+            # NOTE: overloading shift so use parent's
+            PythonOperator.set_downstream(last_command, conda_lib_install_op)
+            last_command = self if self.parallel else conda_lib_install_op
 
         # Overload sequence
         self._first_command = self
@@ -103,15 +117,25 @@ class InstallLibraryOperator(LibraryOperatorBase):
     _original = "airflow_common.library.task.InstallLibraryOperator"
 
     def __init__(
-        self, task_id: str, pip: List[PipLibrary], git: List[GitRepo], parallel: Optional[bool] = False, command_prefix: Optional[str] = "", **kwargs
+        self,
+        task_id: str,
+        pip: Optional[List[PipLibrary]] = None,
+        conda: Optional[List[CondaLibrary]] = None,
+        git: Optional[List[GitRepo]] = None,
+        parallel: Optional[bool] = False,
+        command_prefix: Optional[str] = "",
+        **kwargs,
     ):
         from airflow.providers.standard.operators.bash import BashOperator
 
-        obj = LibraryListTaskArgs.model_validate({"pip": pip, "git": git, "parallel": parallel, "command_prefix": command_prefix})
+        obj = LibraryListTaskArgs.model_validate(
+            {"pip": pip or [], "conda": conda or [], "git": git or [], "parallel": parallel, "command_prefix": command_prefix}
+        )
 
         super().__init__(
             task_id=task_id,
             pip=obj.pip,
+            conda=obj.conda,
             git=obj.git,
             parallel=obj.parallel,
             command_prefix=obj.command_prefix,
@@ -125,15 +149,24 @@ class InstallLibrarySSHOperator(LibraryOperatorBase):
     _original = "airflow_common.library.task.InstallLibrarySSHOperator"
 
     def __init__(
-        self, task_id: str, pip: List[PipLibrary], git: List[GitRepo], parallel: Optional[bool] = False, command_prefix: Optional[str] = "", **kwargs
+        self,
+        task_id: str,
+        pip: Optional[List[PipLibrary]] = None,
+        conda: Optional[List[CondaLibrary]] = None,
+        git: Optional[List[GitRepo]] = None,
+        parallel: Optional[bool] = False,
+        command_prefix: Optional[str] = "",
+        **kwargs,
     ):
         from airflow.providers.ssh.operators.ssh import SSHOperator
 
-        obj = LibraryListSSHTaskArgs.model_validate({"pip": pip, "git": git, "parallel": parallel, "command_prefix": command_prefix})
-
+        obj = LibraryListSSHTaskArgs.model_validate(
+            {"pip": pip or [], "conda": conda or [], "git": git or [], "parallel": parallel, "command_prefix": command_prefix}
+        )
         super().__init__(
             task_id=task_id,
             pip=obj.pip,
+            conda=obj.conda,
             git=obj.git,
             parallel=obj.parallel,
             command_prefix=obj.command_prefix,
@@ -143,18 +176,10 @@ class InstallLibrarySSHOperator(LibraryOperatorBase):
         )
 
 
-class _LibraryCommonArgs:
-    pip: List[PipLibrary] = Field(default_factory=list)
-    git: List[GitRepo] = Field(default_factory=list)
-
-    parallel: Optional[bool] = Field(default=False)
-    command_prefix: Optional[str] = Field(default="")
+class LibraryListTaskArgs(BashTaskArgs, LibraryList): ...
 
 
-class LibraryListTaskArgs(BashTaskArgs, _LibraryCommonArgs): ...
-
-
-class LibraryListSSHTaskArgs(SSHTaskArgs, _LibraryCommonArgs): ...
+class LibraryListSSHTaskArgs(SSHTaskArgs, LibraryList): ...
 
 
 class LibraryListTask(BashTask, LibraryListTaskArgs):
