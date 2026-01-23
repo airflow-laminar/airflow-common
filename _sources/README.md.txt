@@ -7,6 +7,20 @@ Common operators and tasks for Airflow
 [![License](https://img.shields.io/github/license/airflow-laminar/airflow-common)](https://github.com/airflow-laminar/airflow-common)
 [![PyPI](https://img.shields.io/pypi/v/airflow-common.svg)](https://pypi.python.org/pypi/airflow-common)
 
+## Overview
+
+`airflow-common` provides common operators, topology helpers, and library management tasks for Apache Airflow workflows.
+
+Key features:
+
+- **Common Operators**: Convenience operators like `Skip`, `Fail`, and `Pass` for workflow control
+- **Topology Helpers**: Functions like `all_success_any_failure` and `if_booted_do` for building complex DAG topologies
+- **Library Management**: Pydantic models for `PipLibrary`, `CondaLibrary`, and `GitRepo` with corresponding operators for package installation
+- **Infrastructure Tasks**: Operators for system maintenance like `JournalctlClean`
+
+> [!NOTE]
+> This library is built on [airflow-pydantic](https://github.com/airflow-laminar/airflow-pydantic) for Pydantic-based Airflow constructs, and integrates seamlessly with [airflow-config](https://github.com/airflow-laminar/airflow-config) for YAML-driven DAG definitions using Hydra.
+
 ## Installation
 
 You can install from pip:

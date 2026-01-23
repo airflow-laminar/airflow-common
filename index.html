@@ -3,19 +3,19 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="docs/src/API.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Getting Started" href="docs/src/getting-started.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
         <title>airflow-common v0.7.8</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=6cba18cf" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=890fd012" />
     
     
 
@@ -197,6 +197,8 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/examples.html">Examples</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="docs/src/API.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="docs/src/_build/airflow_common.html">airflow_common</a></li>
 </ul>
@@ -248,6 +250,21 @@
 <a class="reference external" href="https://codecov.io/gh/airflow-laminar/airflow-common"><img alt="codecov" src="https://codecov.io/gh/airflow-laminar/airflow-common/branch/main/graph/badge.svg" /></a>
 <a class="reference external" href="https://github.com/airflow-laminar/airflow-common"><img alt="License" src="https://img.shields.io/github/license/airflow-laminar/airflow-common" /></a>
 <a class="reference external" href="https://pypi.python.org/pypi/airflow-common"><img alt="PyPI" src="https://img.shields.io/pypi/v/airflow-common.svg" /></a></p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">airflow-common</span></code> provides common operators, topology helpers, and library management tasks for Apache Airflow workflows.</p>
+<p>Key features:</p>
+<ul class="simple">
+<li><p><strong>Common Operators</strong>: Convenience operators like <code class="docutils literal notranslate"><span class="pre">Skip</span></code>, <code class="docutils literal notranslate"><span class="pre">Fail</span></code>, and <code class="docutils literal notranslate"><span class="pre">Pass</span></code> for workflow control</p></li>
+<li><p><strong>Topology Helpers</strong>: Functions like <code class="docutils literal notranslate"><span class="pre">all_success_any_failure</span></code> and <code class="docutils literal notranslate"><span class="pre">if_booted_do</span></code> for building complex DAG topologies</p></li>
+<li><p><strong>Library Management</strong>: Pydantic models for <code class="docutils literal notranslate"><span class="pre">PipLibrary</span></code>, <code class="docutils literal notranslate"><span class="pre">CondaLibrary</span></code>, and <code class="docutils literal notranslate"><span class="pre">GitRepo</span></code> with corresponding operators for package installation</p></li>
+<li><p><strong>Infrastructure Tasks</strong>: Operators for system maintenance like <code class="docutils literal notranslate"><span class="pre">JournalctlClean</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This library is built on <a class="reference external" href="https://github.com/airflow-laminar/airflow-pydantic">airflow-pydantic</a> for Pydantic-based Airflow constructs, and integrates seamlessly with <a class="reference external" href="https://github.com/airflow-laminar/airflow-config">airflow-config</a> for YAML-driven DAG definitions using Hydra.</p>
+</div>
+</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <p>You can install from pip:</p>
@@ -274,12 +291,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="docs/src/API.html">
+          <a class="next-page" href="docs/src/getting-started.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API Reference</div>
+                <div class="title">Getting Started</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
