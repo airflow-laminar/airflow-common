@@ -15,6 +15,7 @@ __all__ = (
     "JournalctlCleanTaskArgs",
     "JournalctlCleanSSHTask",
     "JournalctlCleanSSHTaskArgs",
+    "clean_journalctl",
 )
 
 
@@ -25,7 +26,7 @@ def clean_journalctl(sudo: Optional[bool] = True, days: Optional[int] = 2):
 
 
 class JournalctlClean(BashOperator):
-    _original = "airflow_common.infra.task.JournalctlClean"
+    _original = "airflow_common.infra.journalctl.JournalctlClean"
 
     def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
         if "bash_command" in kwargs:
@@ -34,7 +35,7 @@ class JournalctlClean(BashOperator):
 
 
 class JournalctlCleanSSH(SSHOperator):
-    _original = "airflow_common.infra.task.JournalctlCleanSSH"
+    _original = "airflow_common.infra.journalctl.JournalctlCleanSSH"
 
     def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
         if "command" in kwargs:

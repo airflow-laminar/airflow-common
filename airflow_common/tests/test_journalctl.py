@@ -6,7 +6,7 @@ from datetime import datetime
 
 from airflow.models import DAG
 
-from airflow_common.infra.task import JournalctlClean
+from airflow_common.infra.journalctl import JournalctlClean
 
 with DAG(
     description="this is an example dag",
