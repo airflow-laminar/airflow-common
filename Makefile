@@ -46,12 +46,19 @@ format: fix
 ################
 # Other Checks #
 ################
+<<<<<<< before updating
 .PHONY: check-manifest checks check annotate
+=======
+.PHONY: check-dist check-types checks check
+>>>>>>> after updating
 
-check-manifest:  ## check python sdist manifest with check-manifest
-	check-manifest -v
+check-dist:  ## check python sdist and wheel with check-dist
+	check-dist -v
 
-checks: check-manifest
+check-types:  ## check python types with ty
+	ty check --python $$(which python)
+
+checks: check-dist
 
 # Alias
 check: checks
