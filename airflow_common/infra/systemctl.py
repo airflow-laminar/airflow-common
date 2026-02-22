@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Type
+from typing import Literal
 
 from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
 from airflow_pydantic.airflow import BashOperator, SSHOperator
@@ -6,23 +6,23 @@ from pydantic import Field, field_validator
 
 __all__ = (
     "Systemctl",
-    "SystemctlSSH",
+    "SystemctlAction",
     "SystemctlOperator",
     "SystemctlOperatorArgs",
-    "SystemctlSSHOperatorArgs",
+    "SystemctlSSH",
     "SystemctlSSHOperator",
-    "SystemctlTask",
-    "SystemctlTaskArgs",
+    "SystemctlSSHOperatorArgs",
     "SystemctlSSHTask",
     "SystemctlSSHTaskArgs",
-    "SystemctlAction",
+    "SystemctlTask",
+    "SystemctlTaskArgs",
     "systemctl_command",
 )
 
 SystemctlAction = Literal["start", "stop", "enable", "disable", "restart", "status"]
 
 
-def systemctl_command(service: str, action: SystemctlAction = "restart", sudo: Optional[bool] = True) -> str:
+def systemctl_command(service: str, action: SystemctlAction = "restart", sudo: bool | None = True) -> str:
     """Generate a systemctl command."""
     cmd = f"systemctl {action} {service}"
     if sudo:
@@ -37,7 +37,7 @@ class Systemctl(BashOperator):
         self,
         service: str,
         action: SystemctlAction = "restart",
-        sudo: Optional[bool] = True,
+        sudo: bool | None = True,
         **kwargs,
     ):
         if "bash_command" in kwargs:
@@ -52,7 +52,7 @@ class SystemctlSSH(SSHOperator):
         self,
         service: str,
         action: SystemctlAction = "restart",
-        sudo: Optional[bool] = True,
+        sudo: bool | None = True,
         **kwargs,
     ):
         if "command" in kwargs:
@@ -63,13 +63,13 @@ class SystemctlSSH(SSHOperator):
 class SystemctlTaskArgs(BashTaskArgs):
     service: str = Field(...)
     action: SystemctlAction = Field(default="restart")
-    sudo: Optional[bool] = Field(default=True)
+    sudo: bool | None = Field(default=True)
 
 
 class SystemctlSSHTaskArgs(SSHTaskArgs):
     service: str = Field(...)
     action: SystemctlAction = Field(default="restart")
-    sudo: Optional[bool] = Field(default=True)
+    sudo: bool | None = Field(default=True)
 
 
 # Alias
@@ -82,7 +82,7 @@ class SystemctlTask(BashTask, SystemctlTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not Systemctl:
             raise ValueError(f"operator must be 'airflow_common.Systemctl', got: {v}")
         return v
@@ -93,7 +93,7 @@ class SystemctlSSHTask(SSHTask, SystemctlSSHTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not SystemctlSSH:
             raise ValueError(f"operator must be 'airflow_common.SystemctlSSH', got: {v}")
         return v

@@ -1,25 +1,23 @@
-from typing import Optional, Type
-
 from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
 from airflow_pydantic.airflow import BashOperator, SSHOperator
 from pydantic import Field, field_validator
 
 __all__ = (
     "Reboot",
-    "RebootSSH",
     "RebootOperator",
     "RebootOperatorArgs",
-    "RebootSSHOperatorArgs",
+    "RebootSSH",
     "RebootSSHOperator",
-    "RebootTask",
-    "RebootTaskArgs",
+    "RebootSSHOperatorArgs",
     "RebootSSHTask",
     "RebootSSHTaskArgs",
+    "RebootTask",
+    "RebootTaskArgs",
     "reboot_command",
 )
 
 
-def reboot_command(sudo: Optional[bool] = True, delay_minutes: Optional[int] = None) -> str:
+def reboot_command(sudo: bool | None = True, delay_minutes: int | None = None) -> str:
     """Generate a reboot command.
 
     Args:
@@ -41,8 +39,8 @@ class Reboot(BashOperator):
 
     def __init__(
         self,
-        sudo: Optional[bool] = True,
-        delay_minutes: Optional[int] = None,
+        sudo: bool | None = True,
+        delay_minutes: int | None = None,
         **kwargs,
     ):
         if "bash_command" in kwargs:
@@ -55,8 +53,8 @@ class RebootSSH(SSHOperator):
 
     def __init__(
         self,
-        sudo: Optional[bool] = True,
-        delay_minutes: Optional[int] = None,
+        sudo: bool | None = True,
+        delay_minutes: int | None = None,
         **kwargs,
     ):
         if "command" in kwargs:
@@ -65,13 +63,13 @@ class RebootSSH(SSHOperator):
 
 
 class RebootTaskArgs(BashTaskArgs):
-    sudo: Optional[bool] = Field(default=True)
-    delay_minutes: Optional[int] = Field(default=None, description="Delay reboot by N minutes using 'at' command")
+    sudo: bool | None = Field(default=True)
+    delay_minutes: int | None = Field(default=None, description="Delay reboot by N minutes using 'at' command")
 
 
 class RebootSSHTaskArgs(SSHTaskArgs):
-    sudo: Optional[bool] = Field(default=True)
-    delay_minutes: Optional[int] = Field(default=None, description="Delay reboot by N minutes using 'at' command")
+    sudo: bool | None = Field(default=True)
+    delay_minutes: int | None = Field(default=None, description="Delay reboot by N minutes using 'at' command")
 
 
 # Alias
@@ -84,7 +82,7 @@ class RebootTask(BashTask, RebootTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not Reboot:
             raise ValueError(f"operator must be 'airflow_common.Reboot', got: {v}")
         return v
@@ -95,7 +93,7 @@ class RebootSSHTask(SSHTask, RebootSSHTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not RebootSSH:
             raise ValueError(f"operator must be 'airflow_common.RebootSSH', got: {v}")
         return v

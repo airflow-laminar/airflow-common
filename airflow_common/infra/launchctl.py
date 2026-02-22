@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Type
+from typing import Literal
 
 from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
 from airflow_pydantic.airflow import BashOperator, SSHOperator
@@ -6,23 +6,23 @@ from pydantic import Field, field_validator
 
 __all__ = (
     "Lunchy",
-    "LunchySSH",
+    "LunchyAction",
     "LunchyOperator",
     "LunchyOperatorArgs",
-    "LunchySSHOperatorArgs",
+    "LunchySSH",
     "LunchySSHOperator",
-    "LunchyTask",
-    "LunchyTaskArgs",
+    "LunchySSHOperatorArgs",
     "LunchySSHTask",
     "LunchySSHTaskArgs",
-    "LunchyAction",
+    "LunchyTask",
+    "LunchyTaskArgs",
     "lunchy_command",
 )
 
 LunchyAction = Literal["start", "stop", "restart", "status", "list"]
 
 
-def lunchy_command(service: str, action: LunchyAction = "restart", sudo: Optional[bool] = False) -> str:
+def lunchy_command(service: str, action: LunchyAction = "restart", sudo: bool | None = False) -> str:
     """Generate a lunchy command for macOS launchctl management.
 
     Lunchy is a friendly wrapper around launchctl for managing launchd agents/daemons.
@@ -40,7 +40,7 @@ class Lunchy(BashOperator):
         self,
         service: str,
         action: LunchyAction = "restart",
-        sudo: Optional[bool] = False,
+        sudo: bool | None = False,
         **kwargs,
     ):
         if "bash_command" in kwargs:
@@ -55,7 +55,7 @@ class LunchySSH(SSHOperator):
         self,
         service: str,
         action: LunchyAction = "restart",
-        sudo: Optional[bool] = False,
+        sudo: bool | None = False,
         **kwargs,
     ):
         if "command" in kwargs:
@@ -66,13 +66,13 @@ class LunchySSH(SSHOperator):
 class LunchyTaskArgs(BashTaskArgs):
     service: str = Field(...)
     action: LunchyAction = Field(default="restart")
-    sudo: Optional[bool] = Field(default=False)
+    sudo: bool | None = Field(default=False)
 
 
 class LunchySSHTaskArgs(SSHTaskArgs):
     service: str = Field(...)
     action: LunchyAction = Field(default="restart")
-    sudo: Optional[bool] = Field(default=False)
+    sudo: bool | None = Field(default=False)
 
 
 # Alias
@@ -85,7 +85,7 @@ class LunchyTask(BashTask, LunchyTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not Lunchy:
             raise ValueError(f"operator must be 'airflow_common.Lunchy', got: {v}")
         return v
@@ -96,7 +96,7 @@ class LunchySSHTask(SSHTask, LunchySSHTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not LunchySSH:
             raise ValueError(f"operator must be 'airflow_common.LunchySSH', got: {v}")
         return v

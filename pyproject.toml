@@ -156,6 +156,9 @@ section-order = [
     "F401",
     "F403",
 ]
+"airflow_common/tests/**" = [
+    "S102",
+]
 
 [tool.yardang]
 title = "airflow-common"

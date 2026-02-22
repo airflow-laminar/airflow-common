@@ -1,17 +1,17 @@
-from typing import List, Literal, Optional
+from typing import Literal
 
 from airflow_pydantic import BaseModel, BashCommands
 from pydantic import Field, model_validator
 
 __all__ = (
-    "clone_repo",
-    "GitRepo",
-    "PipLibrary",
     "CondaLibrary",
-    "LibraryList",
-    "Library",
-    "PyPATool",
     "CondaTool",
+    "GitRepo",
+    "Library",
+    "LibraryList",
+    "PipLibrary",
+    "PyPATool",
+    "clone_repo",
 )
 
 
@@ -129,12 +129,12 @@ class CondaLibrary(BaseModel):
 
 
 class LibraryList(BaseModel):
-    pip: List[PipLibrary] = Field(default_factory=list)
-    conda: List[CondaLibrary] = Field(default_factory=list)
-    git: List[GitRepo] = Field(default_factory=list)
+    pip: list[PipLibrary] = Field(default_factory=list)
+    conda: list[CondaLibrary] = Field(default_factory=list)
+    git: list[GitRepo] = Field(default_factory=list)
 
-    parallel: Optional[bool] = Field(default=False)
-    command_prefix: Optional[str] = Field(default="")
+    parallel: bool | None = Field(default=False)
+    command_prefix: str | None = Field(default="")
 
 
 # Alias
