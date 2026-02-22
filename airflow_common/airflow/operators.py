@@ -2,9 +2,9 @@ from airflow_pydantic import fail, pass_, skip
 from airflow_pydantic.airflow import PythonOperator
 
 __all__ = (
-    "Skip",
     "Fail",
     "Pass",
+    "Skip",
 )
 
 

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from airflow_pydantic import fail, pass_, ping
 from airflow_pydantic.airflow import PythonOperator
@@ -13,9 +13,9 @@ __all__ = ("all_success_any_failure", "if_booted_do")
 def all_success_any_failure(
     *,
     task_id: str,
-    tasks: List["BaseOperator"],
+    tasks: list["BaseOperator"],
     dag: "DAG",
-    queue: Optional[str] = None,
+    queue: str | None = None,
 ):
     any_ssh_failure = PythonOperator(
         task_id=f"{task_id}-any-failure",

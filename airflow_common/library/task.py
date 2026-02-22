@@ -1,5 +1,3 @@
-from typing import List, Optional, Type
-
 from airflow_pydantic import BashTask, BashTaskArgs, ImportPath, SSHTask, SSHTaskArgs
 from airflow_pydantic.airflow import PythonOperator
 from pydantic import Field, field_validator
@@ -7,13 +5,13 @@ from pydantic import Field, field_validator
 from .model import CondaLibrary, GitRepo, LibraryList, PipLibrary
 
 __all__ = (
-    "LibraryOperatorBase",
     "InstallLibraryOperator",
     "InstallLibrarySSHOperator",
-    "LibraryListTaskArgs",
+    "LibraryListSSHTask",
     "LibraryListSSHTaskArgs",
     "LibraryListTask",
-    "LibraryListSSHTask",
+    "LibraryListTaskArgs",
+    "LibraryOperatorBase",
 )
 
 
@@ -24,13 +22,13 @@ class LibraryOperatorBase(PythonOperator):
     def __init__(
         self,
         task_id: str,
-        pip: List[PipLibrary],
-        conda: List[CondaLibrary],
-        git: List[GitRepo],
+        pip: list[PipLibrary],
+        conda: list[CondaLibrary],
+        git: list[GitRepo],
         operator,
         operator_command_arg,
-        parallel: Optional[bool] = False,
-        command_prefix: Optional[str] = "",
+        parallel: bool | None = False,
+        command_prefix: str | None = "",
         **kwargs,
     ):
         self.pip = pip
@@ -45,12 +43,9 @@ class LibraryOperatorBase(PythonOperator):
 
         # Print info, run each git library, run each pip library
         info = []
-        for lib in self.git:
-            info.append(f"Git library: {lib}")
-        for lib in self.pip:
-            info.append(f"Pip library: {lib}")
-        for lib in self.conda:
-            info.append(f"Conda library: {lib}")
+        info.extend([f"Git library: {lib}" for lib in self.git])
+        info.extend([f"Pip library: {lib}" for lib in self.pip])
+        info.extend([f"Conda library: {lib}" for lib in self.conda])
 
         # Initialize self
         super().__init__(
@@ -119,11 +114,11 @@ class InstallLibraryOperator(LibraryOperatorBase):
     def __init__(
         self,
         task_id: str,
-        pip: Optional[List[PipLibrary]] = None,
-        conda: Optional[List[CondaLibrary]] = None,
-        git: Optional[List[GitRepo]] = None,
-        parallel: Optional[bool] = False,
-        command_prefix: Optional[str] = "",
+        pip: list[PipLibrary] | None = None,
+        conda: list[CondaLibrary] | None = None,
+        git: list[GitRepo] | None = None,
+        parallel: bool | None = False,
+        command_prefix: str | None = "",
         **kwargs,
     ):
         from airflow.providers.standard.operators.bash import BashOperator
@@ -151,11 +146,11 @@ class InstallLibrarySSHOperator(LibraryOperatorBase):
     def __init__(
         self,
         task_id: str,
-        pip: Optional[List[PipLibrary]] = None,
-        conda: Optional[List[CondaLibrary]] = None,
-        git: Optional[List[GitRepo]] = None,
-        parallel: Optional[bool] = False,
-        command_prefix: Optional[str] = "",
+        pip: list[PipLibrary] | None = None,
+        conda: list[CondaLibrary] | None = None,
+        git: list[GitRepo] | None = None,
+        parallel: bool | None = False,
+        command_prefix: str | None = "",
         **kwargs,
     ):
         from airflow.providers.ssh.operators.ssh import SSHOperator
@@ -187,9 +182,9 @@ class LibraryListTask(BashTask, LibraryListTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
-        if not isinstance(v, Type) and issubclass(v, InstallLibraryOperator):
-            raise ValueError(f"operator must be 'airflow_common.InstallLibraryOperator', got: {v}")
+    def validate_operator(cls, v: type) -> type:
+        if not isinstance(v, type) and issubclass(v, InstallLibraryOperator):
+            raise TypeError(f"operator must be 'airflow_common.InstallLibraryOperator', got: {v}")
         return v
 
 
@@ -198,7 +193,7 @@ class LibraryListSSHTask(SSHTask, LibraryListTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
-        if not isinstance(v, Type) and issubclass(v, InstallLibrarySSHOperator):
-            raise ValueError(f"operator must be 'airflow_common.InstallLibrarySSHOperator', got: {v}")
+    def validate_operator(cls, v: type) -> type:
+        if not isinstance(v, type) and issubclass(v, InstallLibrarySSHOperator):
+            raise TypeError(f"operator must be 'airflow_common.InstallLibrarySSHOperator', got: {v}")
         return v

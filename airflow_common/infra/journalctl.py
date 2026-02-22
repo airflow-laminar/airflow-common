@@ -1,34 +1,31 @@
-from typing import Optional, Type
-
 from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
 from airflow_pydantic.airflow import BashOperator, SSHOperator
 from pydantic import Field, field_validator
 
 __all__ = (
     "JournalctlClean",
-    "JournalctlCleanSSH",
     "JournalctlCleanOperator",
     "JournalctlCleanOperatorArgs",
-    "JournalctlCleanSSHOperatorArgs",
+    "JournalctlCleanSSH",
     "JournalctlCleanSSHOperator",
-    "JournalctlCleanTask",
-    "JournalctlCleanTaskArgs",
+    "JournalctlCleanSSHOperatorArgs",
     "JournalctlCleanSSHTask",
     "JournalctlCleanSSHTaskArgs",
+    "JournalctlCleanTask",
+    "JournalctlCleanTaskArgs",
     "clean_journalctl",
 )
 
 
-def clean_journalctl(sudo: Optional[bool] = True, days: Optional[int] = 2):
+def clean_journalctl(sudo: bool | None = True, days: int | None = 2):
     days = days or 2
-    cmd = f"sudo journalctl --vacuum-time={days}d" if sudo else f"journalctl --vacuum-time={days}d"
-    return cmd
+    return f"sudo journalctl --vacuum-time={days}d" if sudo else f"journalctl --vacuum-time={days}d"
 
 
 class JournalctlClean(BashOperator):
     _original = "airflow_common.infra.journalctl.JournalctlClean"
 
-    def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
+    def __init__(self, sudo: bool | None = True, days: int | None = 2, **kwargs):
         if "bash_command" in kwargs:
             raise ValueError("JournalctlClean does not accept 'bash_command' as an argument.")
         super().__init__(bash_command=clean_journalctl(sudo=sudo, days=days), **kwargs)
@@ -37,20 +34,20 @@ class JournalctlClean(BashOperator):
 class JournalctlCleanSSH(SSHOperator):
     _original = "airflow_common.infra.journalctl.JournalctlCleanSSH"
 
-    def __init__(self, sudo: Optional[bool] = True, days: Optional[int] = 2, **kwargs):
+    def __init__(self, sudo: bool | None = True, days: int | None = 2, **kwargs):
         if "command" in kwargs:
             raise ValueError("JournalctlCleanSSH does not accept 'command' as an argument.")
         super().__init__(command=clean_journalctl(sudo=sudo, days=days), **kwargs)
 
 
 class JournalctlCleanTaskArgs(BashTaskArgs):
-    sudo: Optional[bool] = Field(default=True)
-    days: Optional[int] = Field(default=2)
+    sudo: bool | None = Field(default=True)
+    days: int | None = Field(default=2)
 
 
 class JournalctlCleanSSHTaskArgs(SSHTaskArgs):
-    sudo: Optional[bool] = Field(default=True)
-    days: Optional[int] = Field(default=2)
+    sudo: bool | None = Field(default=True)
+    days: int | None = Field(default=2)
 
 
 # Alias
@@ -63,7 +60,7 @@ class JournalctlCleanTask(BashTask, JournalctlCleanTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not JournalctlClean:
             raise ValueError(f"operator must be 'airflow_common.JournalctlClean', got: {v}")
         return v
@@ -74,7 +71,7 @@ class JournalctlCleanSSHTask(SSHTask, JournalctlCleanSSHTaskArgs):
 
     @field_validator("operator")
     @classmethod
-    def validate_operator(cls, v: Type) -> Type:
+    def validate_operator(cls, v: type) -> type:
         if v is not JournalctlCleanSSH:
             raise ValueError(f"operator must be 'airflow_common.JournalctlCleanSSH', got: {v}")
         return v
