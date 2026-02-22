@@ -46,11 +46,7 @@ format: fix
 ################
 # Other Checks #
 ################
-<<<<<<< before updating
-.PHONY: check-manifest checks check annotate
-=======
 .PHONY: check-dist check-types checks check
->>>>>>> after updating
 
 check-dist:  ## check python sdist and wheel with check-dist
 	check-dist -v
@@ -62,9 +58,6 @@ checks: check-dist
 
 # Alias
 check: checks
-
-annotate:  ## run python type annotation checks with mypy
-	python -m mypy ./airflow_common
 
 #########
 # TESTS #
