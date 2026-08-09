@@ -25,17 +25,11 @@ permissions:
 
 jobs:
   build:
-<<<<<<< before updating
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11"]
         airflow: ["2", "3", ""]
-=======
-    runs-on: ubuntu-latest
->>>>>>> after updating
 
     steps:
       - name: Checkout
