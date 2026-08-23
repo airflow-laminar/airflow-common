@@ -259,24 +259,24 @@
     <span class="k">return</span> <span class="kc">True</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;conditional-workflow&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"conditional-workflow"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="n">check</span> <span class="o">=</span> <span class="n">PythonOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;check-condition&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"check-condition"</span><span class="p">,</span>
         <span class="n">python_callable</span><span class="o">=</span><span class="n">check_condition</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Success path</span>
-    <span class="n">success_path</span> <span class="o">=</span> <span class="n">Pass</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;success-path&quot;</span><span class="p">,</span> <span class="n">trigger_rule</span><span class="o">=</span><span class="s2">&quot;none_failed&quot;</span><span class="p">)</span>
+    <span class="n">success_path</span> <span class="o">=</span> <span class="n">Pass</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"success-path"</span><span class="p">,</span> <span class="n">trigger_rule</span><span class="o">=</span><span class="s2">"none_failed"</span><span class="p">)</span>
 
     <span class="c1"># Failure path</span>
-    <span class="n">failure_path</span> <span class="o">=</span> <span class="n">Fail</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;failure-path&quot;</span><span class="p">,</span> <span class="n">trigger_rule</span><span class="o">=</span><span class="s2">&quot;one_failed&quot;</span><span class="p">)</span>
+    <span class="n">failure_path</span> <span class="o">=</span> <span class="n">Fail</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"failure-path"</span><span class="p">,</span> <span class="n">trigger_rule</span><span class="o">=</span><span class="s2">"one_failed"</span><span class="p">)</span>
 
     <span class="c1"># Skip path (for optional tasks)</span>
-    <span class="n">skip_path</span> <span class="o">=</span> <span class="n">Skip</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;skip-path&quot;</span><span class="p">)</span>
+    <span class="n">skip_path</span> <span class="o">=</span> <span class="n">Skip</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"skip-path"</span><span class="p">)</span>
 
     <span class="n">check</span> <span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">success_path</span><span class="p">,</span> <span class="n">failure_path</span><span class="p">]</span>
 </pre></div>
@@ -294,26 +294,26 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">all_success_any_failure</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;parallel-aggregation&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"parallel-aggregation"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Create multiple parallel tasks</span>
     <span class="n">parallel_tasks</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">BashOperator</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;process-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bash_command</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;echo &#39;Processing </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">BashOperator</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">"process-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">bash_command</span><span class="o">=</span><span class="sa">f</span><span class="s2">"echo 'Processing </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="p">]</span>
 
     <span class="c1"># Aggregate success/failure</span>
     <span class="n">any_failure</span><span class="p">,</span> <span class="n">all_success</span> <span class="o">=</span> <span class="n">all_success_any_failure</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;aggregate&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"aggregate"</span><span class="p">,</span>
         <span class="n">tasks</span><span class="o">=</span><span class="n">parallel_tasks</span><span class="p">,</span>
         <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Continue workflow based on aggregation</span>
-    <span class="n">next_step</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;next-step&quot;</span><span class="p">,</span> <span class="n">bash_command</span><span class="o">=</span><span class="s2">&quot;echo &#39;All done!&#39;&quot;</span><span class="p">)</span>
+    <span class="n">next_step</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"next-step"</span><span class="p">,</span> <span class="n">bash_command</span><span class="o">=</span><span class="s2">"echo 'All done!'"</span><span class="p">)</span>
     <span class="n">all_success</span> <span class="o">&gt;&gt;</span> <span class="n">next_step</span>
 </pre></div>
 </div>
@@ -327,20 +327,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">if_booted_do</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;host-conditional&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"host-conditional"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Only run if host is available</span>
     <span class="n">deploy_task</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;deploy&quot;</span><span class="p">,</span>
-        <span class="n">bash_command</span><span class="o">=</span><span class="s2">&quot;deploy.sh&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"deploy"</span><span class="p">,</span>
+        <span class="n">bash_command</span><span class="o">=</span><span class="s2">"deploy.sh"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">if_booted_do</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;deploy-to-server&quot;</span><span class="p">,</span>
-        <span class="n">host</span><span class="o">=</span><span class="s2">&quot;server.example.com&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"deploy-to-server"</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">"server.example.com"</span><span class="p">,</span>
         <span class="n">task</span><span class="o">=</span><span class="n">deploy_task</span><span class="p">,</span>
         <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
     <span class="p">)</span>
@@ -358,20 +358,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipLibrary</span><span class="p">,</span> <span class="n">InstallLibraryOperator</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;install-pip-libraries&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"install-pip-libraries"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Define libraries</span>
     <span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="n">version_constraint</span><span class="o">=</span><span class="s2">&quot;&gt;=2.0&quot;</span><span class="p">),</span>
-        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">),</span>
-        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;scikit-learn&quot;</span><span class="p">,</span> <span class="n">reinstall</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"pandas"</span><span class="p">,</span> <span class="n">version_constraint</span><span class="o">=</span><span class="s2">"&gt;=2.0"</span><span class="p">),</span>
+        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"numpy"</span><span class="p">),</span>
+        <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"scikit-learn"</span><span class="p">,</span> <span class="n">reinstall</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="n">install_task</span> <span class="o">=</span> <span class="n">InstallLibraryOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;install-libs&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"install-libs"</span><span class="p">,</span>
         <span class="n">pip</span><span class="o">=</span><span class="n">libraries</span><span class="p">,</span>
         <span class="n">conda</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">git</span><span class="o">=</span><span class="p">[],</span>
@@ -387,7 +387,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GitRepo</span><span class="p">,</span> <span class="n">InstallLibraryOperator</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;install-git-repos&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"install-git-repos"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -395,16 +395,16 @@
     <span class="c1"># Define git repositories</span>
     <span class="n">repos</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">GitRepo</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-package&quot;</span><span class="p">,</span>
-            <span class="n">repo</span><span class="o">=</span><span class="s2">&quot;https://github.com/my-org/my-package.git&quot;</span><span class="p">,</span>
-            <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"my-package"</span><span class="p">,</span>
+            <span class="n">repo</span><span class="o">=</span><span class="s2">"https://github.com/my-org/my-package.git"</span><span class="p">,</span>
+            <span class="n">branch</span><span class="o">=</span><span class="s2">"main"</span><span class="p">,</span>
             <span class="n">install</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">GitRepo</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;another-package&quot;</span><span class="p">,</span>
-            <span class="n">repo</span><span class="o">=</span><span class="s2">&quot;https://github.com/my-org/another-package.git&quot;</span><span class="p">,</span>
-            <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;develop&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"another-package"</span><span class="p">,</span>
+            <span class="n">repo</span><span class="o">=</span><span class="s2">"https://github.com/my-org/another-package.git"</span><span class="p">,</span>
+            <span class="n">branch</span><span class="o">=</span><span class="s2">"develop"</span><span class="p">,</span>
             <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Clean before checkout</span>
             <span class="n">install</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">install_deps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -412,7 +412,7 @@
     <span class="p">]</span>
 
     <span class="n">install_task</span> <span class="o">=</span> <span class="n">InstallLibraryOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;install-repos&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"install-repos"</span><span class="p">,</span>
         <span class="n">pip</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">conda</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">git</span><span class="o">=</span><span class="n">repos</span><span class="p">,</span>
@@ -428,7 +428,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CondaLibrary</span><span class="p">,</span> <span class="n">InstallLibraryOperator</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;install-conda-libraries&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"install-conda-libraries"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -436,17 +436,17 @@
     <span class="c1"># Define conda libraries</span>
     <span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">CondaLibrary</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
-            <span class="n">env</span><span class="o">=</span><span class="s2">&quot;ml-env&quot;</span><span class="p">,</span>  <span class="c1"># Install in specific environment</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"tensorflow"</span><span class="p">,</span>
+            <span class="n">env</span><span class="o">=</span><span class="s2">"ml-env"</span><span class="p">,</span>  <span class="c1"># Install in specific environment</span>
         <span class="p">),</span>
         <span class="n">CondaLibrary</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pytorch&quot;</span><span class="p">,</span>
-            <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;mamba&quot;</span><span class="p">,</span>  <span class="c1"># Use mamba for faster installs</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"pytorch"</span><span class="p">,</span>
+            <span class="n">tool</span><span class="o">=</span><span class="s2">"mamba"</span><span class="p">,</span>  <span class="c1"># Use mamba for faster installs</span>
         <span class="p">),</span>
     <span class="p">]</span>
 
     <span class="n">install_task</span> <span class="o">=</span> <span class="n">InstallLibraryOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;install-conda-libs&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"install-conda-libs"</span><span class="p">,</span>
         <span class="n">pip</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">conda</span><span class="o">=</span><span class="n">libraries</span><span class="p">,</span>
         <span class="n">git</span><span class="o">=</span><span class="p">[],</span>
@@ -468,7 +468,7 @@
 <span class="p">)</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;install-all-libraries&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"install-all-libraries"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -476,17 +476,17 @@
     <span class="c1"># Define all libraries</span>
     <span class="n">library_list</span> <span class="o">=</span> <span class="n">LibraryList</span><span class="p">(</span>
         <span class="n">pip</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;requests&quot;</span><span class="p">),</span>
-            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pydantic&quot;</span><span class="p">,</span> <span class="n">version_constraint</span><span class="o">=</span><span class="s2">&quot;&gt;=2&quot;</span><span class="p">),</span>
+            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"requests"</span><span class="p">),</span>
+            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"pydantic"</span><span class="p">,</span> <span class="n">version_constraint</span><span class="o">=</span><span class="s2">"&gt;=2"</span><span class="p">),</span>
         <span class="p">],</span>
         <span class="n">conda</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">CondaLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">),</span>
+            <span class="n">CondaLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"numpy"</span><span class="p">),</span>
         <span class="p">],</span>
         <span class="n">git</span><span class="o">=</span><span class="p">[</span>
             <span class="n">GitRepo</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-lib&quot;</span><span class="p">,</span>
-                <span class="n">repo</span><span class="o">=</span><span class="s2">&quot;https://github.com/my-org/my-lib.git&quot;</span><span class="p">,</span>
-                <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">"my-lib"</span><span class="p">,</span>
+                <span class="n">repo</span><span class="o">=</span><span class="s2">"https://github.com/my-org/my-lib.git"</span><span class="p">,</span>
+                <span class="n">branch</span><span class="o">=</span><span class="s2">"main"</span><span class="p">,</span>
                 <span class="n">install</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">],</span>
@@ -494,7 +494,7 @@
     <span class="p">)</span>
 
     <span class="n">install_task</span> <span class="o">=</span> <span class="n">InstallLibraryOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;install-all&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"install-all"</span><span class="p">,</span>
         <span class="n">pip</span><span class="o">=</span><span class="n">library_list</span><span class="o">.</span><span class="n">pip</span><span class="p">,</span>
         <span class="n">conda</span><span class="o">=</span><span class="n">library_list</span><span class="o">.</span><span class="n">conda</span><span class="p">,</span>
         <span class="n">git</span><span class="o">=</span><span class="n">library_list</span><span class="o">.</span><span class="n">git</span><span class="p">,</span>
@@ -511,28 +511,28 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipLibrary</span><span class="p">,</span> <span class="n">GitRepo</span><span class="p">,</span> <span class="n">InstallLibrarySSHOperator</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;install-remote-libraries&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"install-remote-libraries"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="n">install_task</span> <span class="o">=</span> <span class="n">InstallLibrarySSHOperator</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;install-on-remote&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"install-on-remote"</span><span class="p">,</span>
         <span class="n">pip</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">),</span>
-            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">),</span>
+            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"pandas"</span><span class="p">),</span>
+            <span class="n">PipLibrary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"numpy"</span><span class="p">),</span>
         <span class="p">],</span>
         <span class="n">conda</span><span class="o">=</span><span class="p">[],</span>
         <span class="n">git</span><span class="o">=</span><span class="p">[</span>
             <span class="n">GitRepo</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-app&quot;</span><span class="p">,</span>
-                <span class="n">repo</span><span class="o">=</span><span class="s2">&quot;https://github.com/my-org/my-app.git&quot;</span><span class="p">,</span>
-                <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">"my-app"</span><span class="p">,</span>
+                <span class="n">repo</span><span class="o">=</span><span class="s2">"https://github.com/my-org/my-app.git"</span><span class="p">,</span>
+                <span class="n">branch</span><span class="o">=</span><span class="s2">"main"</span><span class="p">,</span>
                 <span class="n">install</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">],</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;my-remote-server&quot;</span><span class="p">,</span>
-        <span class="n">command_prefix</span><span class="o">=</span><span class="s2">&quot;source /opt/venv/bin/activate&quot;</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"my-remote-server"</span><span class="p">,</span>
+        <span class="n">command_prefix</span><span class="o">=</span><span class="s2">"source /opt/venv/bin/activate"</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -548,22 +548,22 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">JournalctlClean</span><span class="p">,</span> <span class="n">JournalctlCleanSSH</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;infrastructure-cleanup&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"infrastructure-cleanup"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>  <span class="c1"># Weekly cleanup</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Local cleanup</span>
     <span class="n">local_cleanup</span> <span class="o">=</span> <span class="n">JournalctlClean</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;local-journal-cleanup&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"local-journal-cleanup"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>  <span class="c1"># Keep 7 days of logs</span>
     <span class="p">)</span>
 
     <span class="c1"># Remote cleanup via SSH</span>
     <span class="n">remote_cleanup</span> <span class="o">=</span> <span class="n">JournalctlCleanSSH</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;remote-journal-cleanup&quot;</span><span class="p">,</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;production-server&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"remote-journal-cleanup"</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"production-server"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
     <span class="p">)</span>
@@ -580,33 +580,33 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Systemctl</span><span class="p">,</span> <span class="n">SystemctlSSH</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;service-management&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"service-management"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Manual trigger</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Stop service before maintenance</span>
     <span class="n">stop_worker</span> <span class="o">=</span> <span class="n">Systemctl</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;stop-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"stop-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Restart service after maintenance</span>
     <span class="n">restart_worker</span> <span class="o">=</span> <span class="n">Systemctl</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;restart-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;restart&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"restart-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"restart"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Enable service on remote server</span>
     <span class="n">enable_remote</span> <span class="o">=</span> <span class="n">SystemctlSSH</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;enable-remote-service&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-scheduler&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;enable&quot;</span><span class="p">,</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;production-server&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"enable-remote-service"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-scheduler"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"enable"</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"production-server"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -622,25 +622,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Systemctl</span><span class="p">,</span> <span class="n">JournalctlClean</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;coordinated-restart&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"coordinated-restart"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
-    <span class="n">services</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;airflow-webserver&quot;</span><span class="p">,</span> <span class="s2">&quot;airflow-scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;airflow-celery-worker&quot;</span><span class="p">]</span>
+    <span class="n">services</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"airflow-webserver"</span><span class="p">,</span> <span class="s2">"airflow-scheduler"</span><span class="p">,</span> <span class="s2">"airflow-celery-worker"</span><span class="p">]</span>
 
     <span class="c1"># Stop all services</span>
     <span class="n">stop_tasks</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Systemctl</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;stop-</span><span class="si">{</span><span class="n">svc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">)</span>
+        <span class="n">Systemctl</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">"stop-</span><span class="si">{</span><span class="n">svc</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">svc</span> <span class="ow">in</span> <span class="n">services</span>
     <span class="p">]</span>
 
     <span class="c1"># Maintenance task</span>
-    <span class="n">cleanup</span> <span class="o">=</span> <span class="n">JournalctlClean</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;cleanup-journals&quot;</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">cleanup</span> <span class="o">=</span> <span class="n">JournalctlClean</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"cleanup-journals"</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 
     <span class="c1"># Restart all services</span>
     <span class="n">start_tasks</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Systemctl</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;start-</span><span class="si">{</span><span class="n">svc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+        <span class="n">Systemctl</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">"start-</span><span class="si">{</span><span class="n">svc</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"start"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">svc</span> <span class="ow">in</span> <span class="n">services</span>
     <span class="p">]</span>
 
@@ -660,27 +660,27 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Systemctl</span><span class="p">,</span> <span class="n">Reboot</span><span class="p">,</span> <span class="n">RebootSSH</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;graceful-reboot&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"graceful-reboot"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Manual trigger</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Stop services first</span>
     <span class="n">stop_worker</span> <span class="o">=</span> <span class="n">Systemctl</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;stop-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"stop-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">stop_scheduler</span> <span class="o">=</span> <span class="n">Systemctl</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;stop-scheduler&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-scheduler&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"stop-scheduler"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-scheduler"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Schedule reboot in 2 minutes (to allow graceful shutdown)</span>
     <span class="n">reboot</span> <span class="o">=</span> <span class="n">Reboot</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;scheduled-reboot&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"scheduled-reboot"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">delay_minutes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span>
@@ -697,23 +697,23 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemctlSSH</span><span class="p">,</span> <span class="n">RebootSSH</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;remote-reboot&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"remote-reboot"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Stop services on remote</span>
     <span class="n">stop_services</span> <span class="o">=</span> <span class="n">SystemctlSSH</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;stop-remote-services&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;worker-server&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"stop-remote-services"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"worker-server"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Reboot remote server with delay</span>
     <span class="n">reboot_remote</span> <span class="o">=</span> <span class="n">RebootSSH</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;reboot-remote&quot;</span><span class="p">,</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;worker-server&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"reboot-remote"</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"worker-server"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">delay_minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
@@ -730,31 +730,31 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lunchy</span><span class="p">,</span> <span class="n">LunchySSH</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;macos-service-management&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"macos-service-management"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="c1"># Stop local macOS service</span>
     <span class="n">stop_worker</span> <span class="o">=</span> <span class="n">Lunchy</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;stop-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;timkpaine.airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"stop-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"timkpaine.airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Start local macOS service</span>
     <span class="n">start_worker</span> <span class="o">=</span> <span class="n">Lunchy</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;start-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;timkpaine.airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"start-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"timkpaine.airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"start"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Restart on remote Mac via SSH</span>
     <span class="n">restart_remote</span> <span class="o">=</span> <span class="n">LunchySSH</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;restart-remote-worker&quot;</span><span class="p">,</span>
-        <span class="n">service</span><span class="o">=</span><span class="s2">&quot;timkpaine.airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;restart&quot;</span><span class="p">,</span>
-        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">&quot;mac-worker&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"restart-remote-worker"</span><span class="p">,</span>
+        <span class="n">service</span><span class="o">=</span><span class="s2">"timkpaine.airflow-celery-worker"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"restart"</span><span class="p">,</span>
+        <span class="n">ssh_conn_id</span><span class="o">=</span><span class="s2">"mac-worker"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">stop_worker</span> <span class="o">&gt;&gt;</span> <span class="n">start_worker</span> <span class="o">&gt;&gt;</span> <span class="n">restart_remote</span>
@@ -769,26 +769,26 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lunchy</span><span class="p">,</span> <span class="n">Reboot</span>
 
 <span class="k">with</span> <span class="n">DAG</span><span class="p">(</span>
-    <span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;macos-graceful-reboot&quot;</span><span class="p">,</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"macos-graceful-reboot"</span><span class="p">,</span>
     <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">start_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="n">services</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;timkpaine.airflow-celery-worker&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;timkpaine.airflow-scheduler&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;timkpaine.airflow-webserver&quot;</span><span class="p">,</span>
+        <span class="s2">"timkpaine.airflow-celery-worker"</span><span class="p">,</span>
+        <span class="s2">"timkpaine.airflow-scheduler"</span><span class="p">,</span>
+        <span class="s2">"timkpaine.airflow-webserver"</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="c1"># Stop all services</span>
     <span class="n">stop_tasks</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Lunchy</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;stop-</span><span class="si">{</span><span class="n">svc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;stop&quot;</span><span class="p">)</span>
+        <span class="n">Lunchy</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">"stop-</span><span class="si">{</span><span class="n">svc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"stop"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">svc</span> <span class="ow">in</span> <span class="n">services</span>
     <span class="p">]</span>
 
     <span class="c1"># Schedule reboot after services stop</span>
     <span class="n">reboot</span> <span class="o">=</span> <span class="n">Reboot</span><span class="p">(</span>
-        <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;reboot-mac&quot;</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s2">"reboot-mac"</span><span class="p">,</span>
         <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">delay_minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
@@ -814,9 +814,9 @@
 
 <span class="nt">all_dags</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_config.DagArgs</span>
-<span class="w">  </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2024-01-01&quot;</span>
+<span class="w">  </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="s">"2024-01-01"</span>
 <span class="w">  </span><span class="nt">catchup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&quot;</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*"</span>
 
 <span class="nt">extensions</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">libraries</span><span class="p">:</span>
@@ -824,7 +824,7 @@
 <span class="w">    </span><span class="nt">pip</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_common.PipLibrary</span>
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pandas</span>
-<span class="w">        </span><span class="nt">version_constraint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&gt;=2.0&quot;</span>
+<span class="w">        </span><span class="nt">version_constraint</span><span class="p">:</span><span class="w"> </span><span class="s">"&gt;=2.0"</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_common.PipLibrary</span>
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">numpy</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_common.PipLibrary</span>
@@ -832,7 +832,7 @@
 <span class="w">    </span><span class="nt">git</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_common.GitRepo</span>
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-ml-library</span>
-<span class="w">        </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://github.com/my-org/my-ml-library.git&quot;</span>
+<span class="w">        </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="s">"https://github.com/my-org/my-ml-library.git"</span>
 <span class="w">        </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
 <span class="w">        </span><span class="nt">install</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">editable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -853,9 +853,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># dags/deploy_libraries.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">DAG</span>
 
-<span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;config/deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;libraries&quot;</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"config/deploy"</span><span class="p">,</span> <span class="s2">"libraries"</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">DAG</span><span class="p">(</span><span class="n">dag_id</span><span class="o">=</span><span class="s2">&quot;deploy-libraries&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">DAG</span><span class="p">(</span><span class="n">dag_id</span><span class="o">=</span><span class="s2">"deploy-libraries"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">dag</span><span class="p">:</span>
     <span class="k">pass</span>  <span class="c1"># Tasks are created from config</span>
 </pre></div>
 </div>
@@ -867,9 +867,9 @@
 
 <span class="nt">all_dags</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow_config.DagArgs</span>
-<span class="w">  </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2024-01-01&quot;</span>
+<span class="w">  </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="s">"2024-01-01"</span>
 <span class="w">  </span><span class="nt">catchup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">3</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0&quot;</span><span class="w">  </span><span class="c1"># Weekly on Sunday at 3 AM</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">"0</span><span class="nv"> </span><span class="s">3</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0"</span><span class="w">  </span><span class="c1"># Weekly on Sunday at 3 AM</span>
 
 <span class="nt">dags</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">weekly-maintenance</span><span class="p">:</span>
@@ -890,20 +890,20 @@
 
 <span class="c1"># Generate clone/install commands</span>
 <span class="n">commands</span> <span class="o">=</span> <span class="n">clone_repo</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-repo&quot;</span><span class="p">,</span>
-    <span class="n">repo</span><span class="o">=</span><span class="s2">&quot;https://github.com/my-org/my-repo.git&quot;</span><span class="p">,</span>
-    <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;feature/new-feature&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"my-repo"</span><span class="p">,</span>
+    <span class="n">repo</span><span class="o">=</span><span class="s2">"https://github.com/my-org/my-repo.git"</span><span class="p">,</span>
+    <span class="n">branch</span><span class="o">=</span><span class="s2">"feature/new-feature"</span><span class="p">,</span>
     <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">install</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">tool</span><span class="o">=</span><span class="s2">&quot;uv&quot;</span><span class="p">,</span>  <span class="c1"># Use uv for faster installs</span>
+    <span class="n">tool</span><span class="o">=</span><span class="s2">"uv"</span><span class="p">,</span>  <span class="c1"># Use uv for faster installs</span>
 <span class="p">)</span>
 
 <span class="c1"># Use in a BashOperator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">airflow.operators.bash</span><span class="w"> </span><span class="kn">import</span> <span class="n">BashOperator</span>
 
 <span class="n">clone_task</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
-    <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;clone-and-install&quot;</span><span class="p">,</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s2">"clone-and-install"</span><span class="p">,</span>
     <span class="n">bash_command</span><span class="o">=</span><span class="n">commands</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
