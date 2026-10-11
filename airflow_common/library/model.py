@@ -49,10 +49,10 @@ def clone_repo(
         cmds.insert(0, f"cd {dir}")
         cmds.insert(0, f"mkdir -p {dir}")
     if install:
-        tool = "uv pip" if tool == "uv" else "pip"
+        install_tool = "uv pip" if tool == "uv" else "pip"
         install_deps_flag = "" if install_deps else "--no-deps "
         editable_flag = "-e " if editable else ""
-        cmd = f"{tool} install {install_deps_flag}{editable_flag}."
+        cmd = f"{install_tool} install {install_deps_flag}{editable_flag}."
         cmds.append(f"{cmd}")
     return BashCommands(commands=cmds)._serialize()
 

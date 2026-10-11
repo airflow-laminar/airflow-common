@@ -58,6 +58,7 @@ airflow = [
     "apache-airflow-providers-standard",
 ]
 airflow3 = [
+    "sqlalchemy<2.1",
     "apache-airflow>=3,<3.2",
     "apache-airflow-providers-ssh",
     "apache-airflow-providers-standard",
@@ -122,6 +123,9 @@ addopts = [
     "--junitxml=junit.xml",
 ]
 testpaths = "airflow_common/tests"
+
+[tool.ty.analysis]
+allowed-unresolved-imports = ["airflow.**"]
 
 [tool.ruff]
 line-length = 150
