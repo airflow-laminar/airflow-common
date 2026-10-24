@@ -25,16 +25,26 @@ lint-py:  ## lint python with ruff
 	python -m ruff format --check airflow_common
 
 lint-docs:  ## lint docs with mdformat and codespell
+<<<<<<< before updating
 	python -m mdformat --check README.md
 	python -m codespell_lib README.md
+=======
+	python -m mdformat --check README.md $(wildcard docs/src) 
+	python -m codespell_lib README.md $(wildcard docs/src) 
+>>>>>>> after updating
 
 fix-py:  ## autoformat python code with ruff
 	python -m ruff check --fix airflow_common
 	python -m ruff format airflow_common
 
 fix-docs:  ## autoformat docs with mdformat and codespell
+<<<<<<< before updating
 	python -m mdformat README.md
 	python -m codespell_lib --write README.md
+=======
+	python -m mdformat README.md $(wildcard docs/src) 
+	python -m codespell_lib --write README.md $(wildcard docs/src) 
+>>>>>>> after updating
 
 lint: lint-py lint-docs  ## run all linters
 lints: lint
@@ -50,9 +60,9 @@ check-dist:  ## check python sdist and wheel with check-dist
 	check-dist -v
 
 check-types:  ## check python types with ty
-	ty check --python $$(which python)
+	python -m ty check
 
-checks: check-dist
+checks: check-dist check-types
 
 # Alias
 check: checks
