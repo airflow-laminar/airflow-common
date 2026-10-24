@@ -151,6 +151,8 @@ Library management models and operators:
 Infrastructure maintenance tasks:
 
 - `JournalctlClean` / `JournalctlCleanSSH` - Clean systemd journal logs
+- `FileCleanup` / `FileCleanupSSH` - Delete files older than a number of days under one or more directories
+- `DiskUsageCheck` / `DiskUsageCheckSSH` - Fail when a filesystem is fuller than a threshold
 - `Systemctl` / `SystemctlSSH` - Manage systemd services (start, stop, enable, disable, restart)
 - `Reboot` / `RebootSSH` - Reboot systems (with optional delay via `at` command)
 - `Lunchy` / `LunchySSH` - Manage macOS launchd services via Lunchy

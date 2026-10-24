@@ -16,7 +16,7 @@ Key features:
 - **Common Operators**: Convenience operators like `Skip`, `Fail`, and `Pass` for workflow control
 - **Topology Helpers**: Functions like `all_success_any_failure` and `if_booted_do` for building complex DAG topologies
 - **Library Management**: Pydantic models for `PipLibrary`, `CondaLibrary`, and `GitRepo` with corresponding operators for package installation
-- **Infrastructure Tasks**: Operators for system maintenance like `JournalctlClean`
+- **Infrastructure Tasks**: Operators for system maintenance like `JournalctlClean`, `FileCleanup`, and `DiskUsageCheck`
 
 > [!NOTE]
 > This library is built on [airflow-pydantic](https://github.com/airflow-laminar/airflow-pydantic) for Pydantic-based Airflow constructs, and integrates seamlessly with [airflow-config](https://github.com/airflow-laminar/airflow-config) for YAML-driven DAG definitions using Hydra.

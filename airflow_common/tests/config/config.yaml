@@ -31,3 +31,31 @@ dags:
         _target_: airflow_common.JournalctlCleanOperator
         sudo: true
         days: 2
+  clean-files:
+    start_date: 2023-01-01
+    description: "this is an example dag"
+    schedule: "0 4 * * *"
+    tasks:
+      clean:
+        _target_: airflow_common.FileCleanupTask
+        paths: [/var/log/app, /var/tmp/app]
+        days: 30
+      clean-remote:
+        _target_: airflow_common.FileCleanupSSHTask
+        ssh_conn_id: worker
+        paths: [/var/tmp/app]
+        days: 7
+        pattern: "*.tmp"
+  check-disk:
+    start_date: 2023-01-01
+    description: "this is an example dag"
+    schedule: "0 5 * * *"
+    tasks:
+      check:
+        _target_: airflow_common.DiskUsageCheckTask
+        paths: [/, /var]
+        threshold: 85
+      check-remote:
+        _target_: airflow_common.DiskUsageCheckSSHTask
+        ssh_conn_id: worker
+        threshold: 90
