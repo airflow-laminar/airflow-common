@@ -16,9 +16,6 @@ __all__ = (
 
 
 class LibraryOperatorBase(PythonOperator):
-    _first_command: "PythonOperator"
-    _last_command: "PythonOperator"
-
     def __init__(
         self,
         task_id: str,
@@ -36,6 +33,7 @@ class LibraryOperatorBase(PythonOperator):
         self.git = git
         self.operator = operator
         self.parallel = parallel
+        self._install_tasks = []
         if command_prefix:
             self.command_prefix = f"{command_prefix}\n"
         else:
@@ -62,8 +60,9 @@ class LibraryOperatorBase(PythonOperator):
                 **{operator_command_arg: f"{self.command_prefix}{git_repo.clone()}"},
                 **kwargs,
             )
-            # NOTE: overloading shift so use parent's
+            # Bypass leaf routing while wiring internal tasks.
             PythonOperator.set_downstream(last_command, git_repo_clone_op)
+            self._install_tasks.append(git_repo_clone_op)
             last_command = self if self.parallel else git_repo_clone_op
 
         for pip_lib in self.pip:
@@ -72,8 +71,9 @@ class LibraryOperatorBase(PythonOperator):
                 **{operator_command_arg: f"{self.command_prefix}{pip_lib.install()}"},
                 **kwargs,
             )
-            # NOTE: overloading shift so use parent's
+            # Bypass leaf routing while wiring internal tasks.
             PythonOperator.set_downstream(last_command, pip_lib_install_op)
+            self._install_tasks.append(pip_lib_install_op)
             last_command = self if self.parallel else pip_lib_install_op
 
         for conda_lib in self.conda:
@@ -82,30 +82,20 @@ class LibraryOperatorBase(PythonOperator):
                 **{operator_command_arg: f"{self.command_prefix}{conda_lib.install()}"},
                 **kwargs,
             )
-            # NOTE: overloading shift so use parent's
+            # Bypass leaf routing while wiring internal tasks.
             PythonOperator.set_downstream(last_command, conda_lib_install_op)
+            self._install_tasks.append(conda_lib_install_op)
             last_command = self if self.parallel else conda_lib_install_op
 
-        # Overload sequence
-        self._first_command = self
-        self._last_command = last_command
+    @property
+    def leaves(self):
+        if not self._install_tasks:
+            return [self]
+        return self._install_tasks if self.parallel else self._install_tasks[-1:]
 
-    def __lshift__(self, other):
-        """<<"""
-        self._first_command << other
-        return self
-
-    def __rshift__(self, other):
-        """>>"""
-        self._last_command >> other
-        return self
-
-    def set_upstream(self, other):
-        self._first_command.set_upstream(other)
-        return self
-
-    def set_downstream(self, other):
-        self._last_command.set_downstream(other)
+    def set_downstream(self, other, edge_modifier=None):
+        for command in self.leaves:
+            PythonOperator.set_downstream(command, other, edge_modifier=edge_modifier)
 
 
 class InstallLibraryOperator(LibraryOperatorBase):
