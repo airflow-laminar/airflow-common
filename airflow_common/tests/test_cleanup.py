@@ -7,8 +7,8 @@ import time
 import pytest
 from airflow_config import load_config
 
-from airflow_common.infra.cleanup import FileCleanupSSHTask, FileCleanupTask, file_cleanup_command
-from airflow_common.infra.disk import DiskUsageCheckSSHTask, DiskUsageCheckTask, disk_usage_check_command
+from airflow_common.infra.cleanup import FileCleanup, FileCleanupSSH, FileCleanupSSHTask, FileCleanupTask, file_cleanup_command
+from airflow_common.infra.disk import DiskUsageCheck, DiskUsageCheckSSH, DiskUsageCheckSSHTask, DiskUsageCheckTask, disk_usage_check_command
 
 
 def _age(path, days):
@@ -92,3 +92,36 @@ class TestTaskModels:
         assert 'FileCleanupSSH(ssh_conn_id="worker", paths=["/var/tmp/app"], days=7, pattern="*.tmp", task_id="clean-remote", dag=dag)' in clean
         assert 'DiskUsageCheck(paths=["/", "/var"], threshold=85, task_id="check", dag=dag)' in check
         assert 'DiskUsageCheckSSH(ssh_conn_id="worker", threshold=90, task_id="check-remote", dag=dag)' in check
+
+
+class TestOperators:
+    def test_operators_reject_raw_commands(self):
+        with pytest.raises(ValueError, match="does not accept 'bash_command'"):
+            FileCleanup(task_id="clean", paths=["/tmp"], bash_command="echo test")
+        with pytest.raises(ValueError, match="does not accept 'command'"):
+            FileCleanupSSH(task_id="clean", paths=["/tmp"], ssh_conn_id="worker", command="echo test")
+        with pytest.raises(ValueError, match="does not accept 'bash_command'"):
+            DiskUsageCheck(task_id="check", bash_command="echo test")
+        with pytest.raises(ValueError, match="does not accept 'command'"):
+            DiskUsageCheckSSH(task_id="check", ssh_conn_id="worker", command="echo test")
+
+    def test_operators_build_their_commands(self):
+        pytest.importorskip("airflow")
+        assert FileCleanup(task_id="clean", paths=["/tmp/x"], days=3).bash_command == file_cleanup_command(["/tmp/x"], days=3)
+        assert FileCleanupSSH(task_id="clean", paths=["/tmp/x"], ssh_conn_id="worker").command == file_cleanup_command(["/tmp/x"])
+        assert DiskUsageCheck(task_id="check", threshold=90).bash_command == disk_usage_check_command(threshold=90)
+        assert DiskUsageCheckSSH(task_id="check", paths=["/var"], ssh_conn_id="worker").command == disk_usage_check_command(["/var"])
+
+    def test_task_models_pin_their_operators(self):
+        assert FileCleanupTask(task_id="clean", paths=["/tmp"]).operator is FileCleanup
+        assert FileCleanupSSHTask(task_id="clean", paths=["/tmp"]).operator is FileCleanupSSH
+        assert DiskUsageCheckTask(task_id="check").operator is DiskUsageCheck
+        assert DiskUsageCheckSSHTask(task_id="check").operator is DiskUsageCheckSSH
+        with pytest.raises(ValueError, match="operator must be"):
+            FileCleanupTask(task_id="clean", paths=["/tmp"], operator="airflow_common.DiskUsageCheck")
+        with pytest.raises(ValueError, match="operator must be"):
+            FileCleanupSSHTask(task_id="clean", paths=["/tmp"], operator="airflow_common.DiskUsageCheck")
+        with pytest.raises(ValueError, match="operator must be"):
+            DiskUsageCheckTask(task_id="check", operator="airflow_common.FileCleanup")
+        with pytest.raises(ValueError, match="operator must be"):
+            DiskUsageCheckSSHTask(task_id="check", operator="airflow_common.FileCleanup")
