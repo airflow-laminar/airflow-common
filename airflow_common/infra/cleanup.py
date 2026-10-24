@@ -1,8 +1,14 @@
 from shlex import quote
+from typing import TYPE_CHECKING
 
-from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
-from airflow_pydantic.airflow import BashOperator, SSHOperator
+from airflow_pydantic import BashTask, BashTaskArgs, ImportPath, SSHTask, SSHTaskArgs
 from pydantic import Field, field_validator
+
+if TYPE_CHECKING:
+    from airflow.providers.ssh.operators.ssh import SSHOperator
+    from airflow.providers.standard.operators.bash import BashOperator
+else:
+    from airflow_pydantic.airflow import BashOperator, SSHOperator
 
 __all__ = (
     "FileCleanup",
@@ -119,7 +125,7 @@ FileCleanupSSHOperatorArgs = FileCleanupSSHTaskArgs
 
 
 class FileCleanupTask(BashTask, FileCleanupTaskArgs):
-    operator: CallablePath = Field(default="airflow_common.FileCleanup", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.FileCleanup", validate_default=True)
 
     @field_validator("operator")
     @classmethod
@@ -130,7 +136,7 @@ class FileCleanupTask(BashTask, FileCleanupTaskArgs):
 
 
 class FileCleanupSSHTask(SSHTask, FileCleanupSSHTaskArgs):
-    operator: CallablePath = Field(default="airflow_common.FileCleanupSSH", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.FileCleanupSSH", validate_default=True)
 
     @field_validator("operator")
     @classmethod

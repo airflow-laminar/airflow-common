@@ -23,6 +23,7 @@ class TestHelpers:
                 python_callable=mock_ping.return_value,
             )
             if make_list:
+                assert isinstance(task, list)
                 mock_python_operator.return_value.__rshift__.assert_called_once_with(task[0])
             else:
                 mock_python_operator.return_value.__rshift__.assert_called_once_with(task)

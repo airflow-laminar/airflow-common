@@ -1,8 +1,14 @@
+from typing import TYPE_CHECKING
+
 from airflow_pydantic import BashTask, BashTaskArgs, ImportPath, SSHTask, SSHTaskArgs
-from airflow_pydantic.airflow import PythonOperator
 from pydantic import Field, field_validator
 
 from .model import CondaLibrary, GitRepo, LibraryList, PipLibrary
+
+if TYPE_CHECKING:
+    from airflow.providers.standard.operators.python import PythonOperator
+else:
+    from airflow_pydantic.airflow import PythonOperator
 
 __all__ = (
     "InstallLibraryOperator",
