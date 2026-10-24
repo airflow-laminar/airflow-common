@@ -336,6 +336,59 @@ with DAG(
     local_cleanup >> remote_cleanup
 ```
 
+### File Cleanup and Disk Usage Checks
+
+Delete old files, such as task logs or staging files, and fail when a disk is getting full. Each task runs locally or,
+with the `SSH` variant, on another host:
+
+```python
+from airflow import DAG
+from datetime import datetime
+from airflow_common import DiskUsageCheck, DiskUsageCheckSSH, FileCleanup, FileCleanupSSH
+
+with DAG(
+    dag_id="disk-maintenance",
+    schedule="0 4 * * *",
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+) as dag:
+    # Delete task logs older than 30 days, and the empty directories left behind
+    clean_logs = FileCleanup(task_id="clean-logs", paths=["/opt/airflow/logs"], days=30)
+
+    # Delete week-old temporary files on a worker
+    clean_staging = FileCleanupSSH(
+        task_id="clean-staging",
+        ssh_conn_id="worker-1",
+        paths=["/var/tmp/staging"],
+        days=7,
+        pattern="*.tmp",
+    )
+
+    # Fail when the root or data filesystem is more than 85% full
+    check_local = DiskUsageCheck(task_id="check-disk", paths=["/", "/data"], threshold=85)
+    check_worker = DiskUsageCheckSSH(task_id="check-worker-disk", ssh_conn_id="worker-1")
+
+    [clean_logs, clean_staging] >> check_local >> check_worker
+```
+
+The same tasks in YAML with airflow-config:
+
+```yaml
+dags:
+  disk-maintenance:
+    schedule: "0 4 * * *"
+    tasks:
+      clean-logs:
+        _target_: airflow_common.FileCleanupTask
+        paths: [/opt/airflow/logs]
+        days: 30
+      check-worker-disk:
+        _target_: airflow_common.DiskUsageCheckSSHTask
+        ssh_conn_id: worker-1
+        threshold: 85
+        dependencies: [clean-logs]
+```
+
 ### Systemctl Service Management
 
 Manage systemd services (start, stop, enable, disable, restart):
