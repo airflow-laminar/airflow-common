@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING
 
 from airflow_pydantic import fail, pass_, ping
-from airflow_pydantic.airflow import PythonOperator
 
 if TYPE_CHECKING:
     from airflow.models.baseoperator import BaseOperator
     from airflow.models.dag import DAG
+    from airflow.providers.standard.operators.python import PythonOperator
+else:
+    from airflow_pydantic.airflow import PythonOperator
 
 __all__ = ("all_success_any_failure", "if_booted_do")
 
@@ -39,7 +41,7 @@ def all_success_any_failure(
     return any_ssh_failure, all_ssh_success
 
 
-def if_booted_do(task_id: str, host: str, task: "BaseOperator", **check_operators_kwargs) -> "BaseOperator":
+def if_booted_do(task_id: str, host: str, task: "BaseOperator | list[BaseOperator]", **check_operators_kwargs) -> "BaseOperator | list[BaseOperator]":
     check_if_booted = PythonOperator(
         task_id=f"{task_id}-check-if-booted-{host}",
         python_callable=ping(host),

@@ -1,8 +1,13 @@
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
-from airflow_pydantic import BashTask, BashTaskArgs, CallablePath, SSHTask, SSHTaskArgs
-from airflow_pydantic.airflow import BashOperator, SSHOperator
+from airflow_pydantic import BashTask, BashTaskArgs, ImportPath, SSHTask, SSHTaskArgs
 from pydantic import Field, field_validator
+
+if TYPE_CHECKING:
+    from airflow.providers.ssh.operators.ssh import SSHOperator
+    from airflow.providers.standard.operators.bash import BashOperator
+else:
+    from airflow_pydantic.airflow import BashOperator, SSHOperator
 
 __all__ = (
     "Lunchy",
@@ -81,7 +86,7 @@ LunchySSHOperatorArgs = LunchySSHTaskArgs
 
 
 class LunchyTask(BashTask, LunchyTaskArgs):
-    operator: CallablePath = Field(default="airflow_common.Lunchy", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.Lunchy", validate_default=True)
 
     @field_validator("operator")
     @classmethod
@@ -92,7 +97,7 @@ class LunchyTask(BashTask, LunchyTaskArgs):
 
 
 class LunchySSHTask(SSHTask, LunchySSHTaskArgs):
-    operator: CallablePath = Field(default="airflow_common.LunchySSH", validate_default=True)
+    operator: ImportPath = Field(default="airflow_common.LunchySSH", validate_default=True)
 
     @field_validator("operator")
     @classmethod

@@ -1,8 +1,15 @@
+from typing import TYPE_CHECKING
+
 import pytest
-from airflow_pydantic.airflow import DAG, EmptyOperator
 from airflow_pydantic.migration import _airflow_3
 
 from airflow_common import InstallLibraryOperator, InstallLibrarySSHOperator
+
+if TYPE_CHECKING:
+    from airflow.models.dag import DAG
+    from airflow.providers.standard.operators.empty import EmptyOperator
+else:
+    from airflow_pydantic.airflow import DAG, EmptyOperator
 
 pytestmark = pytest.mark.skipif(_airflow_3() is None, reason="Airflow is not installed")
 
@@ -29,7 +36,7 @@ def library_graph(request, operator_cls, parallel):
         libraries["conda"] = [{"name": "conda-package"}]
         task_ids = ["install-repo-clone", *task_ids, "install-conda-package-conda-install"]
     kwargs = {"ssh_conn_id": "unused"} if operator_cls is InstallLibrarySSHOperator else {}
-    with DAG("library_dependencies", schedule=None) as dag:
+    with DAG(dag_id="library_dependencies", schedule=None) as dag:
         install = operator_cls(task_id="install", parallel=parallel, **libraries, **kwargs)
     leaves = task_ids if parallel and task_ids else task_ids[-1:] or [install.task_id]
     return dag, install, task_ids, leaves
