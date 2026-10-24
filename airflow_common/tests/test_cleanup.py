@@ -52,6 +52,16 @@ class TestFileCleanupCommand:
         assert not stale_dir.exists()
         assert tmp_path.exists()
 
+    def test_missing_ok_skips_missing_paths_but_cleans_the_rest(self, tmp_path):
+        old = tmp_path / "old.log"
+        old.write_text("old")
+        _age(old, 40)
+        cmd = file_cleanup_command([str(tmp_path / "missing"), str(tmp_path)], days=30, missing_ok=True)
+
+        subprocess.run(["bash", "-c", cmd], check=True)
+
+        assert not old.exists()
+
     def test_missing_path_fails(self, tmp_path):
         result = subprocess.run(["bash", "-c", file_cleanup_command([str(tmp_path / "missing")])], check=False, capture_output=True)
         assert result.returncode != 0

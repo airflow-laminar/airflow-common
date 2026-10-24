@@ -25,11 +25,13 @@ def file_cleanup_command(
     pattern: str | None = None,
     remove_empty_dirs: bool = True,
     sudo: bool | None = False,
+    missing_ok: bool = False,
 ) -> str:
     """Generate a command that deletes files under each path last modified more than ``days`` days ago.
 
     ``pattern`` limits deletion to file names matching a shell glob. Empty directories left behind are removed,
-    except the paths themselves. A path that does not exist fails the command.
+    except the paths themselves. A path that does not exist fails the command unless ``missing_ok`` is set, which
+    skips it instead, for paths that exist on only some hosts.
     """
     if not paths:
         raise ValueError("file_cleanup_command requires at least one path.")
@@ -39,9 +41,11 @@ def file_cleanup_command(
     name = f" -name {quote(pattern)}" if pattern else ""
     commands = []
     for path in paths:
-        commands.append(f"{find} {quote(path)} -type f{name} -mtime +{days} -delete")
+        steps = [f"{find} {quote(path)} -type f{name} -mtime +{days} -delete"]
         if remove_empty_dirs:
-            commands.append(f"{find} {quote(path)} -mindepth 1 -type d -empty -delete")
+            steps.append(f"{find} {quote(path)} -mindepth 1 -type d -empty -delete")
+        step = " && ".join(steps)
+        commands.append(f"{{ [ ! -e {quote(path)} ] || {{ {step}; }}; }}" if missing_ok else step)
     return " && ".join(commands)
 
 
@@ -55,12 +59,16 @@ class FileCleanup(BashOperator):
         pattern: str | None = None,
         remove_empty_dirs: bool = True,
         sudo: bool | None = False,
+        missing_ok: bool = False,
         **kwargs,
     ):
         if "bash_command" in kwargs:
             raise ValueError("FileCleanup does not accept 'bash_command' as an argument.")
         super().__init__(
-            bash_command=file_cleanup_command(paths=paths, days=days, pattern=pattern, remove_empty_dirs=remove_empty_dirs, sudo=sudo), **kwargs
+            bash_command=file_cleanup_command(
+                paths=paths, days=days, pattern=pattern, remove_empty_dirs=remove_empty_dirs, sudo=sudo, missing_ok=missing_ok
+            ),
+            **kwargs,
         )
 
 
@@ -74,12 +82,16 @@ class FileCleanupSSH(SSHOperator):
         pattern: str | None = None,
         remove_empty_dirs: bool = True,
         sudo: bool | None = False,
+        missing_ok: bool = False,
         **kwargs,
     ):
         if "command" in kwargs:
             raise ValueError("FileCleanupSSH does not accept 'command' as an argument.")
         super().__init__(
-            command=file_cleanup_command(paths=paths, days=days, pattern=pattern, remove_empty_dirs=remove_empty_dirs, sudo=sudo), **kwargs
+            command=file_cleanup_command(
+                paths=paths, days=days, pattern=pattern, remove_empty_dirs=remove_empty_dirs, sudo=sudo, missing_ok=missing_ok
+            ),
+            **kwargs,
         )
 
 
@@ -89,6 +101,7 @@ class FileCleanupTaskArgs(BashTaskArgs):
     pattern: str | None = Field(default=None, description="Only delete files whose names match this shell glob.")
     remove_empty_dirs: bool = Field(default=True)
     sudo: bool | None = Field(default=False)
+    missing_ok: bool = Field(default=False, description="Skip paths that do not exist instead of failing.")
 
 
 class FileCleanupSSHTaskArgs(SSHTaskArgs):
@@ -97,6 +110,7 @@ class FileCleanupSSHTaskArgs(SSHTaskArgs):
     pattern: str | None = Field(default=None, description="Only delete files whose names match this shell glob.")
     remove_empty_dirs: bool = Field(default=True)
     sudo: bool | None = Field(default=False)
+    missing_ok: bool = Field(default=False, description="Skip paths that do not exist instead of failing.")
 
 
 # Alias
